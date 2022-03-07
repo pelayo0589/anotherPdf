@@ -36,6 +36,7 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate {
     
     var  allPdfsUrls = [PDFUrls]()
     
+    
     var testURLArray = [URL]()
     
     override func viewDidLoad() {
@@ -103,7 +104,9 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate {
   
     
     func drawPDFfromURL(url: URL) -> UIImage? {
-        guard let document = CGPDFDocument(url as CFURL) else { return nil }
+        guard let document = CGPDFDocument(url as CFURL) else {
+            print("it is not a pdf document")
+            return nil }
         guard let page = document.page(at: 1) else { return nil }
 
         let pageRect = page.getBoxRect(.mediaBox)
@@ -120,6 +123,8 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate {
 
         return img
     }
+    
+
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -230,9 +235,14 @@ extension PDFViewController: UICollectionViewDelegate, UICollectionViewDataSourc
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PDFImageCell.identifier, for: indexPath) as? PDFImageCell else {
             return UICollectionViewCell()
         }
-     
+        
+        if allPdfsUrls[indexPath.row].pdfImage == nil {
+            cell.pdfImageView.image = UIImage(systemName: "photo")
+        }else {
+            cell.pdfImageView.image = UIImage(data: allPdfsUrls[indexPath.row].pdfImage!)
+        }
        
-        cell.pdfImageView.image = drawPDFfromURL(url: allPdfsUrls[indexPath.row].pdfUrls!)
+       
         
         print(allPdfsUrls[indexPath.row].pdfUrls!)
         //print(drawPDFfromURL(url: allPdfsUrls[indexPath.row].pdfUrls!))

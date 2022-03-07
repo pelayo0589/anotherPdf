@@ -68,9 +68,33 @@ class ShareViewController: UIViewController {
         let managedContext = self.persistentContainer.viewContext
         // have fun
       }
+    
+    func drawPDFfromURL(url: URL) -> UIImage? {
+        guard let document = CGPDFDocument(url as CFURL) else {
+            print("it is not a pdf document")
+            return nil }
+        guard let page = document.page(at: 1) else { return nil }
+
+        let pageRect = page.getBoxRect(.mediaBox)
+        let renderer = UIGraphicsImageRenderer(size: pageRect.size)
+        let img = renderer.image { ctx in
+            UIColor.white.set()
+            ctx.fill(pageRect)
+
+            ctx.cgContext.translateBy(x: 0.0, y: pageRect.size.height)
+            ctx.cgContext.scaleBy(x: 1.0, y: -1.0)
+
+            ctx.cgContext.drawPDFPage(page)
+        }
+
+        return img
+    }
+    
 
     
     var pdfUrls = [PDFUrls]()
+   
+    var pdfImagesArray = [UIImage]()
     
     override func viewDidLoad() {
         
@@ -83,15 +107,19 @@ class ShareViewController: UIViewController {
                                 if let pdfUrl = pdfUrl as? URL {
                                 // pdfUrl now contains the path to the shared pdf data
                                     print("THIS IS YOUR PDF URL \(pdfUrl) ")
-//                                    let defaults = UserDefaults(suiteName: "group.miguelhoracio.PDFPelayoV02")
-//                                    defaults?.set(pdfUrl, forKey: "pdfUrl")
+                                    let defaults = UserDefaults(suiteName: "group.miguelhoracio.PDFPelayoV02")
+                                    defaults?.set(pdfUrl, forKey: "pdfUrl")
                                   
                                     self.openContainerApp()
                                     let context = self.persistentContainer.viewContext
                                     
-                                    let newPdfUrls = PDFUrls(context: context)
+                                    var newPdfUrls = PDFUrls(context: context)
                                     newPdfUrls.pdfUrls = pdfUrl
+                                    self.pdfImagesArray.append(self.drawPDFfromURL(url: pdfUrl)!)
+                                
+                                  newPdfUrls.pdfImage = self.drawPDFfromURL(url: pdfUrl)?.pngData()
                                     
+                                
                                     
                                     self.saveContext()
                       
