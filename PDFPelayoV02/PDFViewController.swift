@@ -242,12 +242,19 @@ extension PDFViewController: UICollectionViewDelegate, UICollectionViewDataSourc
             cell.pdfImageView.image = UIImage(data: allPdfsUrls[indexPath.row].pdfImage!)
         }
        
-       
-        
-        print(allPdfsUrls[indexPath.row].pdfUrls!)
-        //print(drawPDFfromURL(url: allPdfsUrls[indexPath.row].pdfUrls!))
         cell.titleLabel.text = allPdfsUrls[indexPath.row].pdfUrls?.lastPathComponent
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let pdfUrl = allPdfsUrls[indexPath.row]
+        let detailVC = DetailVC()
+        detailVC.title = pdfUrl.pdfUrls?.lastPathComponent
+        detailVC.pdfUrl = pdfUrl.pdfUrls
+        detailVC.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(detailVC, animated: true)
+        
     }
 }
 

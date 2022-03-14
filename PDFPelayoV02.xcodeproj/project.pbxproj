@@ -29,6 +29,7 @@
 		2DC88A7527D14D92000D8B51 /* PDFCoreDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2DC88A6C27CEA0A4000D8B51 /* PDFCoreDataModel.xcdatamodeld */; };
 		2DC88A7827D14E8C000D8B51 /* NSCustomPersistentContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC88A7727D14E8C000D8B51 /* NSCustomPersistentContainer.swift */; };
 		2DC88A7A27D14FD3000D8B51 /* NSCustomPersistentContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC88A7927D14FD3000D8B51 /* NSCustomPersistentContainer.swift */; };
+		2DC88A7C27D651AB000D8B51 /* DetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC88A7B27D651AB000D8B51 /* DetailVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +93,7 @@
 		2DC88A7327D0EE3A000D8B51 /* DarwinNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarwinNotification.swift; sourceTree = "<group>"; };
 		2DC88A7727D14E8C000D8B51 /* NSCustomPersistentContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCustomPersistentContainer.swift; sourceTree = "<group>"; };
 		2DC88A7927D14FD3000D8B51 /* NSCustomPersistentContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCustomPersistentContainer.swift; sourceTree = "<group>"; };
+		2DC88A7B27D651AB000D8B51 /* DetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +153,7 @@
 				2D1ED53327C29464007CA782 /* SceneDelegate.swift */,
 				2D1ED54727C29B90007CA782 /* blender.pdf */,
 				2D1ED53527C29464007CA782 /* PDFViewController.swift */,
+				2DC88A7B27D651AB000D8B51 /* DetailVC.swift */,
 				2DC88A6C27CEA0A4000D8B51 /* PDFCoreDataModel.xcdatamodeld */,
 				2D1ED54527C2969A007CA782 /* 21.pdf */,
 				2D1ED53A27C29465007CA782 /* Assets.xcassets */,
@@ -349,6 +352,7 @@
 				2D1ED53227C29464007CA782 /* AppDelegate.swift in Sources */,
 				2DC88A4627CD4CE6000D8B51 /* PDFImageCell.swift in Sources */,
 				2DC88A7827D14E8C000D8B51 /* NSCustomPersistentContainer.swift in Sources */,
+				2DC88A7C27D651AB000D8B51 /* DetailVC.swift in Sources */,
 				2D1ED53427C29464007CA782 /* SceneDelegate.swift in Sources */,
 				2DC88A7427D0EE3A000D8B51 /* DarwinNotification.swift in Sources */,
 				2DC88A6E27CEA0A4000D8B51 /* PDFCoreDataModel.xcdatamodeld in Sources */,

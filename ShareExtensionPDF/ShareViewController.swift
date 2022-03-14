@@ -106,16 +106,16 @@ class ShareViewController: UIViewController {
                         OperationQueue.main.addOperation {
                                 if let pdfUrl = pdfUrl as? URL {
                                 // pdfUrl now contains the path to the shared pdf data
-                                    print("THIS IS YOUR PDF URL \(pdfUrl) ")
-                                    let defaults = UserDefaults(suiteName: "group.miguelhoracio.PDFPelayoV02")
-                                    defaults?.set(pdfUrl, forKey: "pdfUrl")
+//                                    print("THIS IS YOUR PDF URL \(pdfUrl) ")
+//                                    let defaults = UserDefaults(suiteName: "group.miguelhoracio.PDFPelayoV02")
+//                                    defaults?.set(pdfUrl, forKey: "pdfUrl")
                                   
                                     self.openContainerApp()
                                     let context = self.persistentContainer.viewContext
                                     
-                                    var newPdfUrls = PDFUrls(context: context)
+                                    let newPdfUrls = PDFUrls(context: context)
                                     newPdfUrls.pdfUrls = pdfUrl
-                                    self.pdfImagesArray.append(self.drawPDFfromURL(url: pdfUrl)!)
+                                   // self.pdfImagesArray.append(self.drawPDFfromURL(url: pdfUrl)!)
                                 
                                   newPdfUrls.pdfImage = self.drawPDFfromURL(url: pdfUrl)?.pngData()
                                     
