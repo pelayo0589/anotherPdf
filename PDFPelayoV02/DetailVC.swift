@@ -36,28 +36,15 @@ class DetailVC: UIViewController {
             return
         }
         
+        print(pdf)
+        
         if let document = PDFDocument(url: pdf) {
             pdfView.document = document
             
-            
-//            savePdfData(pdfData: pdf, fileName: "PRUEBA")
-//            self.pdfURL = actualPath
-            
-            
-//            if let attributes = document.documentAttributes {
-//                let keys = attributes.keys
-//                let firstKey = keys[keys.startIndex]
-//
-//                guard let title = attributes["Title"] else {
-//                    return
-//                }
-//                savePdfData(pdfData: pdf, fileName: title as! String)
-//                //print(attributes["Title"])
-//            }
-            
+ 
         }
         
-        //Add Annotations
+        
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "pencil.tip.crop.circle"), style: .done, target: self, action: #selector(markupVC))
 

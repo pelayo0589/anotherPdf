@@ -17,6 +17,7 @@ import CoreData
 class ShareViewController: UIViewController {
     
     var pdfString: String?
+    var pdfActualPathURL: URL?
     
     // MARK: - Core Data stack
       lazy var persistentContainer: NSPersistentContainer = {
@@ -114,7 +115,7 @@ class ShareViewController: UIViewController {
                                     newPdfUrls.pdfUrls = pdfUrl
                                     newPdfUrls.pdfDocument = pdfDocument?.dataRepresentation()
                                     newPdfUrls.pdfImage = self.drawPDFfromURL(url: pdfUrl)?.pngData()
-                                    
+                                    newPdfUrls.pdfActualPath = self.pdfActualPathURL
                                     self.saveContext()
                                     self.extensionContext!.cancelRequest(withError:NSError())
                                     
@@ -137,7 +138,7 @@ class ShareViewController: UIViewController {
                    let resourceDocPath = try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.miguelhoracio.PDFPelayoV02")
                    let pdfNameFromUrl = "PDFPelayoV02-\(fileName)"
                    let actualPath = resourceDocPath?.appendingPathComponent(pdfNameFromUrl)
-                  
+                   pdfActualPathURL = actualPath
                    try pdfData?.write(to: actualPath!, options: .atomic)
                    print("pdf successfully saved!")
                } catch {

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21C52" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="PDFUrls" representedClassName=".PDFUrls" syncable="YES" codeGenerationType="class">
+        <attribute name="pdfActualPath" optional="YES" attributeType="URI"/>
         <attribute name="pdfDocument" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="pdfImage" optional="YES" attributeType="Binary"/>
         <attribute name="pdfUrls" attributeType="URI"/>
     </entity>
     <elements>
-        <element name="PDFUrls" positionX="-63" positionY="-18" width="128" height="74"/>
+        <element name="PDFUrls" positionX="-63" positionY="-18" width="128" height="89"/>
     </elements>
 </model>
