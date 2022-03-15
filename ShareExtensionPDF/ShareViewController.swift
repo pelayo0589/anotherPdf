@@ -105,32 +105,20 @@ class ShareViewController: UIViewController {
                     provider.loadItem(forTypeIdentifier: kUTTypePDF as String, options: nil, completionHandler: { (pdfUrl, error) in
                         OperationQueue.main.addOperation {
                                 if let pdfUrl = pdfUrl as? URL {
-                                // pdfUrl now contains the path to the shared pdf data
-//                                    print("THIS IS YOUR PDF URL \(pdfUrl) ")
-//                                    let defaults = UserDefaults(suiteName: "group.miguelhoracio.PDFPelayoV02")
-//                                    defaults?.set(pdfUrl, forKey: "pdfUrl")
-                                  
+                                    self.savePdfForGroupContainer(urlString: pdfUrl.absoluteString, fileName: pdfUrl.lastPathComponent)
+                                    let pdfDocument = PDFDocument(url: pdfUrl)
                                     self.openContainerApp()
                                     let context = self.persistentContainer.viewContext
                                     
                                     let newPdfUrls = PDFUrls(context: context)
                                     newPdfUrls.pdfUrls = pdfUrl
-                                   // self.pdfImagesArray.append(self.drawPDFfromURL(url: pdfUrl)!)
-                                
-                                  newPdfUrls.pdfImage = self.drawPDFfromURL(url: pdfUrl)?.pngData()
-                                    
-                                
+                                    newPdfUrls.pdfDocument = pdfDocument?.dataRepresentation()
+                                    newPdfUrls.pdfImage = self.drawPDFfromURL(url: pdfUrl)?.pngData()
                                     
                                     self.saveContext()
-                      
                                     self.extensionContext!.cancelRequest(withError:NSError())
                                     
-                                
-                               
-                                
-                                    
-                 
-                                    
+                                   
                         }
                     }
               }
@@ -139,15 +127,27 @@ class ShareViewController: UIViewController {
             }
         }
         
-
-        
-        
     }
     
-   
-
-
+    func savePdfForGroupContainer(urlString:String, fileName:String) {
+           
+               do {
+                   let url = URL(string: urlString)
+                   let pdfData = try? Data.init(contentsOf: url!)
+                   let resourceDocPath = try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.miguelhoracio.PDFPelayoV02")
+                   let pdfNameFromUrl = "PDFPelayoV02-\(fileName)"
+                   let actualPath = resourceDocPath?.appendingPathComponent(pdfNameFromUrl)
+                  
+                   try pdfData?.write(to: actualPath!, options: .atomic)
+                   print("pdf successfully saved!")
+               } catch {
+                   print("Pdf could not be saved")
+               }
+         
+           
+       }
     
+
     // For skip compile error.
    @objc func openURL(_ url: URL) {
         return

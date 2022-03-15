@@ -17,13 +17,10 @@ class DetailVC: UIViewController {
     var allPdfsUrls = [PDFUrls]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    var pdfUrl: URL?
+    var pdfData: Data?
+    var pdfURL: URL?
     
-    var px : CGFloat = 0.0
-    var py : CGFloat = 0.0
-    var pxStart : CGFloat = 0.0
-    var pyStart : CGFloat = 0.0
-    fileprivate var internalCropRect: CGRect?
+    var actualPath: URL?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,23 +32,71 @@ class DetailVC: UIViewController {
         
       
         
-        guard let pdf = pdfUrl else {
+        guard let pdf = pdfURL else {
             return
         }
         
         if let document = PDFDocument(url: pdf) {
             pdfView.document = document
-        
+            
+            
+//            savePdfData(pdfData: pdf, fileName: "PRUEBA")
+//            self.pdfURL = actualPath
+            
+            
+//            if let attributes = document.documentAttributes {
+//                let keys = attributes.keys
+//                let firstKey = keys[keys.startIndex]
+//
+//                guard let title = attributes["Title"] else {
+//                    return
+//                }
+//                savePdfData(pdfData: pdf, fileName: title as! String)
+//                //print(attributes["Title"])
+//            }
+            
         }
         
         //Add Annotations
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "pencil.tip.crop.circle"), style: .done, target: self, action: #selector(markupVC))
-        
-        // Drag Text
-        
-        handleDrag()
+
+     
     }
+    
+    func savePdfData(pdfData: Data, fileName: String) {
+        DispatchQueue.main.async {
+            let pdfData = pdfData
+            let resourceDocPath = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)).last!
+            let pdfNameFromUrl = "PDFPelayoV02-\(fileName).pdf"
+            self.actualPath = resourceDocPath.appendingPathComponent(pdfNameFromUrl)
+           print(resourceDocPath)
+            do {
+                try pdfData.write(to: self.actualPath!, options: .atomic)
+                
+                print("pdf successfully saved!")
+            } catch {
+                print("Pdf could not be saved")
+            }
+        }
+    }
+    
+    func savePdf(urlString:String, fileName:String) {
+           DispatchQueue.main.async {
+               let url = URL(string: urlString)
+               let pdfData = try? Data.init(contentsOf: url!)
+               let resourceDocPath = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)).last! as URL
+               let pdfNameFromUrl = "PDFPelayoV02-\(fileName).pdf"
+               let actualPath = resourceDocPath.appendingPathComponent(pdfNameFromUrl)
+               do {
+                   try pdfData?.write(to: actualPath, options: .atomic)
+                   print(actualPath)
+                   print("pdf successfully saved!")
+               } catch {
+                   print("Pdf could not be saved")
+               }
+           }
+       }
     
     @objc func markupVC() {
         let previewController = QLPreviewController()
@@ -61,10 +106,7 @@ class DetailVC: UIViewController {
         present(previewController, animated: true)
     }
     
-    func handleDrag() {
-        let drag = UIPanGestureRecognizer(target: self, action: #selector(move))
-        self.pdfView.addGestureRecognizer(drag)
-    }
+
     
     func loadPdfs() {
         let request: NSFetchRequest<PDFUrls> = PDFUrls.fetchRequest()
@@ -77,44 +119,7 @@ class DetailVC: UIViewController {
         }
     }
     
-    @objc func addTextToPage() {
-        internalCropRect = CGRect(x: 100, y: 100, width: 100, height: 50)
-        pdfView.currentPage?.addAnnotation(addText(rect: internalCropRect!))
-    }
-    
-    func addText(rect: CGRect) -> PDFAnnotation {
-        let text = PDFAnnotation(bounds: rect, forType: .widget, withProperties: nil)
-        text.backgroundColor = .lightGray
-        text.font = UIFont.systemFont(ofSize: 18)
-        text.widgetStringValue = "Enter your text"
-        text.widgetFieldType = .text
-        return text
-    }
-    
-    @objc func move(gesture : UIPanGestureRecognizer)
-     {
-         let newPoint = gesture.location(in: self.pdfView)
-         print(newPoint)
-         let state = gesture.state
-         switch state
-         {
-         case .began:
-           
-             pxStart = gesture.location(in: self.pdfView).x
-             pyStart = gesture.location(in: self.pdfView).y
-            // internalCropRect = CGRect(x: pxStart, y: pyStart, width: newPoint.x, height: newPoint.y)
-         case .ended: fallthrough
-         case .changed:
-             let translation = gesture.translation(in: self.pdfView)
-             px = translation.x
-             py = translation.y
-            // internalCropRect = CGRect(x: pxStart, y: pyStart, width: translation.x, height: translation.y)
-             self.pdfView.setNeedsDisplay()
-         default: break
-         }
-         internalCropRect = CGRect(x: pxStart, y: pyStart, width: 100, height: 100)
-         pdfView.currentPage?.addAnnotation(addText(rect: internalCropRect!))
-     }
+
     
 }
 
@@ -124,11 +129,12 @@ extension DetailVC: QLPreviewControllerDataSource, QLPreviewControllerDelegate {
     }
     
     func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
-        guard let url = pdfUrl else {
+        guard let url = pdfURL else {
+        
               fatalError("Could not load \(index).pdf")
           }
-
-          return url as QLPreviewItem
+      
+        return url as QLPreviewItem
     }
     
     func previewController(_ controller: QLPreviewController, editingModeFor previewItem: QLPreviewItem) -> QLPreviewItemEditingMode {
@@ -145,6 +151,20 @@ extension DetailVC: QLPreviewControllerDataSource, QLPreviewControllerDelegate {
                 let nserror = error as NSError
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
+        }
+    }
+    
+    func deleteAllData(_ entity:String) {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
+        fetchRequest.returnsObjectsAsFaults = false
+        do {
+            let results = try context.fetch(fetchRequest)
+            for object in results {
+                guard let objectData = object as? NSManagedObject else {continue}
+                context.delete(objectData)
+            }
+        } catch let error {
+            print("Detele all data in \(entity) error :", error)
         }
     }
     
