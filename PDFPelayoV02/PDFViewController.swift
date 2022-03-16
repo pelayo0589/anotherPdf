@@ -12,7 +12,7 @@ import UniformTypeIdentifiers
 import CoreData
 
 
-class PDFViewController: UIViewController, UIDocumentPickerDelegate {
+class PDFViewController: UIViewController, UIDocumentPickerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { _, _ -> NSCollectionLayoutSection? in
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0)))
@@ -40,6 +40,8 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate {
     var testURLArray = [URL]()
     
     var pdfURLToPass: URL?
+    
+    var imagePicker = UIImagePickerController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,20 +76,105 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate {
  
             loadPdfs()
             
-           
+            imagePicker.delegate = self
            
         }
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapAdd))
         
-        //navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(didTapActionPDF))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(didTapCamera))
         
         
         arrURLS = defaultsForUrlArray.stringArray(forKey: "SavedURLStrings") ?? [String]()
         
-        
+   
+    }
     
+    @objc func didTapCamera() {
+
+  
+           let alert = UIAlertController(title: "Choose Image", message: nil, preferredStyle: .actionSheet)
+           alert.addAction(UIAlertAction(title: "Camera", style: .default, handler: { _ in
+               self.openCamera()
+           }))
+           
+           alert.addAction(UIAlertAction(title: "Gallery", style: .default, handler: { _ in
+               self.openGallary()
+           }))
+           
+           alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: nil))
+           
+       
+           
+           self.present(alert, animated: true, completion: nil)
+    }
+    
+    func openCamera()
+        {
+            if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerController.SourceType.camera))
+            {
+                imagePicker.sourceType = UIImagePickerController.SourceType.camera
+                imagePicker.allowsEditing = true
+                self.present(imagePicker, animated: true, completion: nil)
+            }
+            else
+            {
+                let alert  = UIAlertController(title: "Warning", message: "You don't have camera", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+
+        func openGallary()
+        {
+            imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
+            imagePicker.allowsEditing = true
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+
+        guard let image = info[.editedImage] as? UIImage else {
+            print("No image found")
+            return
+        }
+
+        // print out the image size as a test
+        print(image.size)
         
+        // Create an empty PDF document
+        let pdfDocument = PDFDocument()
+
+        // Load or create your UIImage
+        let imageForPDF = image
+
+        // Create a PDF page instance from your image
+        let pdfPage = PDFPage(image: imageForPDF)
+
+        // Insert the PDF page into your document
+        pdfDocument.insert(pdfPage!, at: 0)
+
+        // Get the raw data of your PDF document
+        let data = pdfDocument.dataRepresentation()
+
+        // The url to save the data to
+      
+        let resourceDocPath = try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.miguelhoracio.PDFPelayoV02")
+        let pdfNameFromUrl = "PDFPelayoV02-\(image.debugDescription)"
+        let actualPath = resourceDocPath?.appendingPathComponent(pdfNameFromUrl)
+
+        // Save the data to the url
+        try! data!.write(to: actualPath!, options: .atomic)
+        
+        let newPdfUrls = PDFUrls(context: context)
+        newPdfUrls.pdfUrls = actualPath
+        //newPdfUrls.pdfDocument = pdfDocument?.dataRepresentation()
+        newPdfUrls.pdfImage = self.drawPDFfromURL(url: actualPath!)?.pngData()
+        newPdfUrls.pdfActualPath = actualPath
+        self.saveContext()
+        loadPdfs()
+        collectionView.reloadData()
     }
     
     override func viewDidLayoutSubviews() {
@@ -334,7 +421,7 @@ extension PDFViewController: UICollectionViewDelegate, UICollectionViewDataSourc
         }else {
             cell.pdfImageView.image = UIImage(data: allPdfsUrls[indexPath.row].pdfImage!)
         }
-        print(allPdfsUrls[indexPath.row].pdfActualPath)
+        
         cell.titleLabel.text = allPdfsUrls[indexPath.row].pdfUrls?.lastPathComponent
         return cell
     }
@@ -346,6 +433,8 @@ extension PDFViewController: UICollectionViewDelegate, UICollectionViewDataSourc
         detailVC.title = pdfUrl.pdfUrls?.lastPathComponent
         detailVC.pdfData = pdfUrl.pdfDocument
         detailVC.pdfURL = pdfUrl.pdfActualPath
+        
+        print(pdfUrl.pdfActualPath)
         
 //        if savedPDFAlreadyExistInGroup(url: pdfUrl.pdfUrls!.absoluteString, fileName: pdfUrl.pdfUrls!.lastPathComponent) == true {
 //           savePdfForGroupContainer2(urlString: pdfUrl.pdfUrls!.absoluteString, fileName: pdfUrl.pdfUrls!.lastPathComponent)
