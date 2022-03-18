@@ -112,7 +112,7 @@ class DetailVC: UIViewController {
 
 extension DetailVC: QLPreviewControllerDataSource, QLPreviewControllerDelegate {
     func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
-        return 3
+        return 5
     }
     
     func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
@@ -120,7 +120,7 @@ extension DetailVC: QLPreviewControllerDataSource, QLPreviewControllerDelegate {
         
               fatalError("Could not load \(index).pdf")
           }
-      
+    
         return url as QLPreviewItem
     }
     

@@ -43,6 +43,9 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate, UINavigatio
     
     var imagePicker = UIImagePickerController()
     
+    var pdfURLforFiles: URL?
+    var pdfURLforUIImage: URL?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 //        deleteAllData("PDFUrls")
@@ -140,41 +143,41 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate, UINavigatio
             return
         }
 
-        // print out the image size as a test
-        print(image.size)
+        createPDFDataFromImage(image: image)
         
-        // Create an empty PDF document
-        let pdfDocument = PDFDocument()
 
-        // Load or create your UIImage
-        let imageForPDF = image
-
-        // Create a PDF page instance from your image
-        let pdfPage = PDFPage(image: imageForPDF)
-
-        // Insert the PDF page into your document
-        pdfDocument.insert(pdfPage!, at: 0)
-
-        // Get the raw data of your PDF document
-        let data = pdfDocument.dataRepresentation()
-
-        // The url to save the data to
-      
-        let resourceDocPath = try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.miguelhoracio.PDFPelayoV02")
-        let pdfNameFromUrl = "PDFPelayoV02-\(image.debugDescription)"
-        let actualPath = resourceDocPath?.appendingPathComponent(pdfNameFromUrl)
-
-        // Save the data to the url
-        try! data!.write(to: actualPath!, options: .atomic)
         
         let newPdfUrls = PDFUrls(context: context)
-        newPdfUrls.pdfUrls = actualPath
-        //newPdfUrls.pdfDocument = pdfDocument?.dataRepresentation()
-        newPdfUrls.pdfImage = self.drawPDFfromURL(url: actualPath!)?.pngData()
-        newPdfUrls.pdfActualPath = actualPath
+        newPdfUrls.pdfUrls = pdfURLforUIImage
+        newPdfUrls.pdfImage = self.drawPDFfromURL(url: pdfURLforUIImage!)?.pngData()
+        newPdfUrls.pdfActualPath = pdfURLforUIImage
         self.saveContext()
         loadPdfs()
         collectionView.reloadData()
+    }
+    
+    func createPDFDataFromImage(image: UIImage) -> NSMutableData {
+        let pdfData = NSMutableData()
+        let imgView = UIImageView.init(image: image)
+        let imageRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+        UIGraphicsBeginPDFContextToData(pdfData, imageRect, nil)
+        UIGraphicsBeginPDFPage()
+        let context = UIGraphicsGetCurrentContext()
+        imgView.layer.render(in: context!)
+        UIGraphicsEndPDFContext()
+
+        //try saving in doc dir to confirm:
+        let dir = try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.miguelhoracio.PDFPelayoV02")
+        let path = dir?.appendingPathComponent("\(image.description).pdf")
+        self.pdfURLforUIImage = path
+
+        do {
+                try pdfData.write(to: path!, options: NSData.WritingOptions.atomic)
+        } catch {
+            print("error catched")
+        }
+
+        return pdfData
     }
     
     override func viewDidLayoutSubviews() {
@@ -250,105 +253,7 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate, UINavigatio
             self.present(documentPickerController, animated: true, completion: nil)
         
     }
-//
-//    func savePdf(urlString:String, fileName:String) {
-//           DispatchQueue.main.async {
-//               do {
-//                   let url = URL(string: urlString)
-//                   let pdfData = try? Data.init(contentsOf: url!)
-//                   let resourceDocPath = try (FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false))
-//                   let pdfNameFromUrl = "PDFPelayoV02-\(fileName)"
-//                   let actualPath = resourceDocPath.appendingPathComponent(pdfNameFromUrl)
-//                   print(actualPath)
-//                   self.pdfURLToPass = actualPath
-//                   try pdfData?.write(to: actualPath, options: .atomic)
-//                   print("pdf successfully saved!")
-//               } catch {
-//                   print("Pdf could not be saved")
-//               }
-//
-//           }
-//       }
-//
-//    func savePdfForGroupContainer(urlString:String, fileName:String) {
-//           DispatchQueue.main.async {
-//               do {
-//                   let url = URL(string: urlString)
-//                   let pdfData = try? Data.init(contentsOf: url!)
-//                   let resourceDocPath = try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.miguelhoracio.PDFPelayoV02")
-//                   let pdfNameFromUrl = "PDFPelayoV02-\(fileName)"
-//                   let actualPath = resourceDocPath?.appendingPathComponent(pdfNameFromUrl)
-//                   print(actualPath)
-//                   self.pdfURLToPass = actualPath
-//                   try pdfData?.write(to: actualPath!, options: .atomic)
-//                   print("pdf successfully saved!")
-//               } catch {
-//                   print("Pdf could not be saved")
-//               }
-//
-//           }
-//       }
-//
-//    func savePdfForGroupContainer2(urlString:String, fileName:String) {
-//           DispatchQueue.main.async {
-//               do {
-//                   let url = URL(string: urlString)
-//                   let pdfData = try? Data.init(contentsOf: url!)
-//                   let resourceDocPath = try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.miguelhoracio.PDFPelayoV02")
-//                   let pdfNameFromUrl = "PDFPelayoV02-\(fileName)"
-//                   let actualPath = resourceDocPath?.appendingPathComponent(pdfNameFromUrl)
-//                   print(actualPath)
-//                   self.pdfURLToPass = actualPath
-//                  // try pdfData?.write(to: actualPath!, options: .atomic)
-//                   print("pdf already exist!")
-//               } catch {
-//                   print("Pdf could not be saved")
-//               }
-//
-//           }
-//       }
-//
-//    func savedPDFAlreadyExistInGroup(url:String, fileName:String) -> Bool {
-//        var status = false
-//        if #available(iOS 10.0, *) {
-//            do {
-//                let docURL = try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.miguelhoracio.PDFPelayoV02")
-//                let contents = try FileManager.default.contentsOfDirectory(at: docURL!, includingPropertiesForKeys: [.fileResourceTypeKey], options: .skipsHiddenFiles)
-//                for url in contents {
-//                    if url.description.contains("PDFPelayoV02-\(fileName)") {
-//                        status = true
-//                    }
-//                }
-//            } catch {
-//                print("could not locate pdf file !!!!!!!")
-//            }
-//        }
-//        return status
-//    }
-//
-//
-//
-//
-//    // check to avoid saving a file multiple times
-//    func pdfFileAlreadySaved(url:String, fileName:String)-> Bool {
-//        var status = false
-//        if #available(iOS 10.0, *) {
-//            do {
-//                let docURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-//                let contents = try FileManager.default.contentsOfDirectory(at: docURL, includingPropertiesForKeys: [.fileResourceTypeKey], options: .skipsHiddenFiles)
-//                for url in contents {
-//                    if url.description.contains("PDFPelayoV02-\(fileName)") {
-//                        status = true
-//                    }
-//                }
-//            } catch {
-//                print("could not locate pdf file !!!!!!!")
-//            }
-//        }
-//        return status
-//    }
-    
-    
+
 
 
     
@@ -361,18 +266,38 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate, UINavigatio
             print("Error: could not access content of url \(selectedFile)")
             return
         }
+        
+        savePdfForGroupContainer(urlString: selectedFile.absoluteString, fileName: selectedFile.lastPathComponent)
      
         let newPdfUrls = PDFUrls(context: context)
         newPdfUrls.pdfUrls = selectedFile
         //newPdfUrls.pdfDocument = pdfDocument?.dataRepresentation()
         newPdfUrls.pdfImage = self.drawPDFfromURL(url: selectedFile)?.pngData()
-        newPdfUrls.pdfActualPath = selectedFile
+        newPdfUrls.pdfActualPath = pdfURLforFiles
         self.saveContext()
         loadPdfs()
         collectionView.reloadData()
        
         
     }
+    
+    func savePdfForGroupContainer(urlString:String, fileName:String) {
+           
+               do {
+                   let url = URL(string: urlString)
+                   let pdfData = try? Data.init(contentsOf: url!)
+                   let resourceDocPath = try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.miguelhoracio.PDFPelayoV02")
+                   let pdfNameFromUrl = "PDFPelayoV02-\(fileName)"
+                   let actualPath = resourceDocPath?.appendingPathComponent(pdfNameFromUrl)
+                   self.pdfURLforFiles = actualPath
+                   try pdfData?.write(to: actualPath!, options: .atomic)
+                   print("pdf successfully saved!")
+               } catch {
+                   print("Pdf could not be saved")
+               }
+         
+           
+       }
     
     func deleteAllData(_ entity:String) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
@@ -434,17 +359,6 @@ extension PDFViewController: UICollectionViewDelegate, UICollectionViewDataSourc
         detailVC.pdfData = pdfUrl.pdfDocument
         detailVC.pdfURL = pdfUrl.pdfActualPath
         
-        print(pdfUrl.pdfActualPath)
-        
-//        if savedPDFAlreadyExistInGroup(url: pdfUrl.pdfUrls!.absoluteString, fileName: pdfUrl.pdfUrls!.lastPathComponent) == true {
-//           savePdfForGroupContainer2(urlString: pdfUrl.pdfUrls!.absoluteString, fileName: pdfUrl.pdfUrls!.lastPathComponent)
-//        } else {
-//            //savePdf(urlString: pdfUrl.pdfUrls!.absoluteString, fileName: pdfUrl.pdfUrls!.lastPathComponent)
-//            savePdfForGroupContainer(urlString: pdfUrl.pdfUrls!.absoluteString, fileName: pdfUrl.pdfUrls!.lastPathComponent)
-//        }
-        
-        
-        
         detailVC.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(detailVC, animated: true)
         
@@ -466,6 +380,8 @@ public extension URL {
         return fileContainer.appendingPathComponent("\(databaseName).sqlite")
     }
 }
+
+
 
 
 
