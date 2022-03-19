@@ -30,7 +30,18 @@ class DetailVC: UIViewController {
         pdfView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(pdfView)
         
-      
+            pdfView.maxScaleFactor = 4.0;
+            pdfView.minScaleFactor = pdfView.scaleFactorForSizeToFit;
+            pdfView.autoScales = true;
+          
+           
+          
+        pdfView.translatesAutoresizingMaskIntoConstraints = false;
+           
+        pdfView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true;
+        pdfView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true;
+        pdfView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true;
+        pdfView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true;
         
         guard let pdf = pdfURL else {
             return

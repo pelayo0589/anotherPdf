@@ -38,11 +38,11 @@ class PDFImageCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let imageSize: CGFloat = contentView.frame.size.height-10
+       
         
-        pdfImageView.frame = CGRect(x: 5, y: 5, width: imageSize, height: imageSize)
+        pdfImageView.frame = CGRect(x: 40, y: 12, width: 90, height: 100)
         titleLabel.sizeToFit()
-        titleLabel.frame = CGRect(x: 5, y: pdfImageView.bottom+10, width: contentView.width, height: 22)
+        titleLabel.frame = CGRect(x: 5, y: pdfImageView.bottom+10, width: contentView.width, height: 50)
     }
     
     override func prepareForReuse() {
