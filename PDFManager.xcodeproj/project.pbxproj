@@ -53,7 +53,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2D1ED52E27C29464007CA782 /* PDFPelayoV02.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFPelayoV02.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D1ED52E27C29464007CA782 /* PDFManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D1ED53127C29464007CA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2D1ED53327C29464007CA782 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		2D1ED53527C29464007CA782 /* PDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
@@ -109,7 +109,7 @@
 		2D1ED52F27C29464007CA782 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2D1ED52E27C29464007CA782 /* PDFPelayoV02.app */,
+				2D1ED52E27C29464007CA782 /* PDFManager.app */,
 				2DC88A2F27C7D9BA000D8B51 /* ShareExtensionPDF.appex */,
 			);
 			name = Products;
@@ -176,9 +176,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2D1ED52D27C29464007CA782 /* PDFPelayoV02 */ = {
+		2D1ED52D27C29464007CA782 /* PDFManager */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D1ED54227C29465007CA782 /* Build configuration list for PBXNativeTarget "PDFPelayoV02" */;
+			buildConfigurationList = 2D1ED54227C29465007CA782 /* Build configuration list for PBXNativeTarget "PDFManager" */;
 			buildPhases = (
 				2D1ED52A27C29464007CA782 /* Sources */,
 				2D1ED52B27C29464007CA782 /* Frameworks */,
@@ -190,9 +190,9 @@
 			dependencies = (
 				2DC88A3827C7D9BA000D8B51 /* PBXTargetDependency */,
 			);
-			name = PDFPelayoV02;
+			name = PDFManager;
 			productName = PDFPelayoV02;
-			productReference = 2D1ED52E27C29464007CA782 /* PDFPelayoV02.app */;
+			productReference = 2D1ED52E27C29464007CA782 /* PDFManager.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2DC88A2E27C7D9BA000D8B51 /* ShareExtensionPDF */ = {
@@ -230,7 +230,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2D1ED52927C29464007CA782 /* Build configuration list for PBXProject "PDFPelayoV02" */;
+			buildConfigurationList = 2D1ED52927C29464007CA782 /* Build configuration list for PBXProject "PDFManager" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -243,7 +243,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2D1ED52D27C29464007CA782 /* PDFPelayoV02 */,
+				2D1ED52D27C29464007CA782 /* PDFManager */,
 				2DC88A2E27C7D9BA000D8B51 /* ShareExtensionPDF */,
 			);
 		};
@@ -556,7 +556,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2D1ED52927C29464007CA782 /* Build configuration list for PBXProject "PDFPelayoV02" */ = {
+		2D1ED52927C29464007CA782 /* Build configuration list for PBXProject "PDFManager" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D1ED54027C29465007CA782 /* Debug */,
@@ -565,7 +565,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D1ED54227C29465007CA782 /* Build configuration list for PBXNativeTarget "PDFPelayoV02" */ = {
+		2D1ED54227C29465007CA782 /* Build configuration list for PBXNativeTarget "PDFManager" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D1ED54327C29465007CA782 /* Debug */,
