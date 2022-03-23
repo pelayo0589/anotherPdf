@@ -80,6 +80,8 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate, UINavigatio
             loadPdfs()
             
             imagePicker.delegate = self
+            
+            addLongTapGesture()
            
         }
         
@@ -91,6 +93,37 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate, UINavigatio
         arrURLS = defaultsForUrlArray.stringArray(forKey: "SavedURLStrings") ?? [String]()
         
    
+    }
+    
+    private func addLongTapGesture() {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
+        collectionView.addGestureRecognizer(gesture)
+    }
+    
+    @objc func didLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else {
+            return
+        }
+        let touchPoint = gesture.location(in: collectionView)
+        
+        guard let indexPath = collectionView.indexPathForItem(at: touchPoint), indexPath.section == 0 else {
+            return
+        }
+        
+        
+        
+        let actionSheet = UIAlertController(title: allPdfsUrls[indexPath.row].pdfActualPath?.lastPathComponent, message: "Would you like to delete this PDF?", preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        actionSheet.addAction(UIAlertAction(title: "Delete", style: .default, handler: { [weak self] _ in
+            self?.context.delete((self?.allPdfsUrls[indexPath.row])!)
+            self?.saveContext()
+            self?.allPdfsUrls.removeAll()
+            self?.loadPdfs()
+            self?.collectionView.reloadData()
+            
+        }))
+        present(actionSheet, animated: true, completion: nil)
     }
     
     @objc func didTapCamera() {
@@ -363,6 +396,8 @@ extension PDFViewController: UICollectionViewDelegate, UICollectionViewDataSourc
         navigationController?.pushViewController(detailVC, animated: true)
         
     }
+    
+    
 }
 
 
