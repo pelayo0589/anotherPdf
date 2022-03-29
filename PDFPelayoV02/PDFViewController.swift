@@ -10,6 +10,8 @@ import PDFKit
 import MobileCoreServices
 import UniformTypeIdentifiers
 import CoreData
+import AVFoundation
+import Photos
 
 
 class PDFViewController: UIViewController, UIDocumentPickerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
@@ -149,9 +151,30 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate, UINavigatio
         {
             if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerController.SourceType.camera))
             {
-                imagePicker.sourceType = UIImagePickerController.SourceType.camera
-                imagePicker.allowsEditing = true
-                self.present(imagePicker, animated: true, completion: nil)
+                if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
+                    DispatchQueue.main.async {
+                        self.imagePicker.sourceType = UIImagePickerController.SourceType.camera
+                        self.imagePicker.allowsEditing = true
+                        self.present(self.imagePicker, animated: true, completion: nil)
+                    }
+                 
+                }else {
+                    AVCaptureDevice.requestAccess(for: .video) { granted in
+                        if granted {
+                            DispatchQueue.main.async {
+                                self.imagePicker.sourceType = UIImagePickerController.SourceType.camera
+                                self.imagePicker.allowsEditing = true
+                                self.present(self.imagePicker, animated: true, completion: nil)
+                            }
+                        }else {
+                            let alert  = UIAlertController(title: "Warning", message: "You don't have permission", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                        }
+                    }
+                }
+                
+           
             }
             else
             {
@@ -163,9 +186,18 @@ class PDFViewController: UIViewController, UIDocumentPickerDelegate, UINavigatio
 
         func openGallary()
         {
-            imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
-            imagePicker.allowsEditing = true
-            self.present(imagePicker, animated: true, completion: nil)
+            PHPhotoLibrary.requestAuthorization(for: .readWrite) { result in
+                if result == .authorized {
+                    DispatchQueue.main.async {
+                        self.imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
+                        self.imagePicker.allowsEditing = true
+                        self.present(self.imagePicker, animated: true, completion: nil)
+                    }
+                   
+                }
+            }
+            
+       
         }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {

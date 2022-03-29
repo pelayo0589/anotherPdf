@@ -21,6 +21,8 @@ class DetailVC: UIViewController {
     var pdfURL: URL?
     
     var actualPath: URL?
+    
+    var fileURLs = [QLPreviewItem]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +49,10 @@ class DetailVC: UIViewController {
             return
         }
         
-        print(pdf)
+    
+        let filePreview = pdf as QLPreviewItem
+        
+        fileURLs.append(filePreview)
         
         if let document = PDFDocument(url: pdf) {
             pdfView.document = document
@@ -123,16 +128,12 @@ class DetailVC: UIViewController {
 
 extension DetailVC: QLPreviewControllerDataSource, QLPreviewControllerDelegate {
     func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
-        return 5
+        return fileURLs.count
     }
     
     func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
-        guard let url = pdfURL else {
-        
-              fatalError("Could not load \(index).pdf")
-          }
-    
-        return url as QLPreviewItem
+     
+        return fileURLs[index]
     }
     
     func previewController(_ controller: QLPreviewController, editingModeFor previewItem: QLPreviewItem) -> QLPreviewItemEditingMode {

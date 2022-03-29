@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraUsageDescription</key>
-	<string>Do you accept app use your camera?</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Do you agree for photo library usage?</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Do you agree for camera usage?</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -47,7 +49,5 @@
 	</dict>
 	<key>UIFileSharingEnabled</key>
 	<true/>
-	<key>CFBundleDisplayName</key>
-	<string>PDF Manager</string>
 </dict>
 </plist>

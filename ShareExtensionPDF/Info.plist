@@ -4,12 +4,10 @@
 <dict>
 	<key>NSExtension</key>
 	<dict>
-        <key>NSExtensionMainStoryboard</key>
-                <string>MainInterface</string>
 		<key>NSExtensionAttributes</key>
 		<dict>
 			<key>NSExtensionActivationRule</key>
-            <string>
+			<string>
                SUBQUERY (
                    extensionItems,
                    $extensionItem,
@@ -22,9 +20,11 @@
                            || ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.jpeg"
                            || ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.png"
                        ).@count == $extensionItem.attachments.@count
-               ).@count >= 1
+               ).@count &gt;= 1
                </string>
 		</dict>
+		<key>NSExtensionMainStoryboard</key>
+		<string>MainInterface</string>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.share-services</string>
 	</dict>
